@@ -1,0 +1,31 @@
+# La pagina dei servizi Everbright: un sito statico (site/), con HTTPS. L'indirizzo arriva dall'ambiente (DOMAIN).
+#
+# Sulla VM la 443 è di sslh, che manda questo nome (SNI) alla porta che compose pubblica sul localhost (HTTPS_PORT); la 80 è
+# di un altro Caddy. Il certificato quindi arriva col TLS-ALPN, passando da sslh: il tentativo HTTP-01 fallisce prima ed è previsto.
+{
+	# dentro il container, porte sopra la 1024: niente capacità per aprirle
+	http_port 8080
+	https_port 8443
+	servers {
+		# UDP non è pubblicato: niente HTTP/3 da annunciare ai browser
+		protocols h1 h2
+	}
+}
+
+{$DOMAIN} {
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		-Server
+	}
+	root * /srv/site
+	# solo i file della pagina; la radice è la cartella e il suo index.html conta come file. Il resto torna alla radice
+	@file file {path} {path}index.html
+	handle @file {
+		file_server
+	}
+	handle {
+		redir * / 302
+	}
+}

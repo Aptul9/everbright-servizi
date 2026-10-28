@@ -1,0 +1,28 @@
+name: servizi
+
+services:
+  web:
+    build: .
+    image: everbright-servizi
+    container_name: servizi-web
+    environment:
+      - DOMAIN=${DOMAIN:?serve DOMAIN, il nome della pagina}
+    ports:
+      # sslh gira qui il TLS di DOMAIN (SNI): solo sul localhost
+      - "127.0.0.1:${HTTPS_PORT:-4446}:8443"
+    volumes:
+      # certificati e account ACME: non si perdono ricreando il container
+      - caddy_dati:/data
+      - caddy_config:/config
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  caddy_dati:
+  caddy_config:

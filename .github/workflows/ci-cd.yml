@@ -1,0 +1,95 @@
+name: CI/CD
+
+# Controlli a ogni pull request e push; su main, se passano, la pagina va sul server.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Controlli
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Immagine e configurazione di Caddy
+        run: |
+          docker build -q -t everbright-servizi .
+          docker run --rm -e DOMAIN=servizi.example.com everbright-servizi caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+          DOMAIN=servizi.example.com docker compose config -q
+
+      - name: La pagina risponde come deve
+        run: |
+          # in chiaro sulla 8080, con le regole del sito vero e le restrizioni di compose (sola lettura, senza capacità)
+          c=$(docker run -d --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges:true -p 8080:8080 -e DOMAIN=http://localhost:8080 everbright-servizi)
+          trap 'docker rm -f "$c" >/dev/null' EXIT
+          for _ in $(seq 1 20); do curl -fsS -o /dev/null http://localhost:8080/ && break; sleep 1; done
+          codice() { curl -s -o /dev/null -w '%{http_code}' "$@"; }
+          curl -fsS http://localhost:8080/ | grep -q '<title>Servizi Everbright</title>'
+          test "$(codice http://localhost:8080/icon.png)" = 200
+          test "$(codice http://localhost:8080/logo-icon.png)" = 200
+          # il resto torna alla radice
+          test "$(codice http://localhost:8080/login)" = 302
+          test "$(codice http://localhost:8080/../Caddyfile)" = 302
+          curl -fsSI http://localhost:8080/ | grep -qi '^x-frame-options: DENY'
+          # ogni link si apre in una scheda nuova
+          html=$(curl -fsS http://localhost:8080/)
+          test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0
+          test -z "$(grep -o '<a [^>]*href="https://[^>]*>' <<<"$html" | grep -v 'target="_blank" rel="noopener noreferrer"')"
+
+  deploy:
+    name: Deploy
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://${{ vars.DEPLOY_DOMAIN }}
+    # un deploy alla volta, senza interrompere quello in corso
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+      DIR: /opt/servizi
+      DOMAIN: ${{ vars.DEPLOY_DOMAIN }}
+      HTTPS_PORT: ${{ vars.HTTPS_PORT }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Accesso SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          test -n "$DOMAIN" && test -n "$HTTPS_PORT" || { echo "mancano le variabili DEPLOY_DOMAIN o HTTPS_PORT"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          # chiave del server fissata: niente StrictHostKeyChecking=no
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Copia sul server
+        run: |
+          # la versione nuova in app.nuova, poi al posto di app: una copia a metà non diventa mai quella che gira
+          tar czf - Caddyfile Dockerfile docker-compose.yml site \
+            | ssh "$TARGET" "set -e; rm -rf $DIR/app.nuova; mkdir -p $DIR/app.nuova; tar xzf - -C $DIR/app.nuova; rm -rf $DIR/app.prima; if [ -d $DIR/app ]; then mv $DIR/app $DIR/app.prima; fi; mv $DIR/app.nuova $DIR/app"
+          # l'ambiente del servizio dalle variabili della pipeline
+          ssh "$TARGET" "umask 077; printf 'DOMAIN=%s\nHTTPS_PORT=%s\n' '$DOMAIN' '$HTTPS_PORT' > $DIR/.env"
+
+      - name: Avvio
+        run: ssh "$TARGET" "set -e; cd $DIR/app; docker compose --env-file $DIR/.env up -d --build --remove-orphans; docker image prune -f >/dev/null"
+
+      - name: La pagina pubblicata risponde
+        run: |
+          # il primo avvio su un nome nuovo aspetta il certificato
+          for _ in $(seq 1 24); do
+            if curl -fsS --max-time 10 "https://$DOMAIN/" | grep -q '<title>Servizi Everbright</title>'; then echo "https://$DOMAIN/ ok"; exit 0; fi
+            sleep 5
+          done
+          ssh "$TARGET" "docker logs --tail 40 servizi-web" || true
+          exit 1
