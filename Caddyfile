@@ -17,6 +17,7 @@
 		X-Content-Type-Options nosniff
 		X-Frame-Options DENY
 		Referrer-Policy no-referrer
+		Cache-Control no-cache
 		-Server
 	}
 	root * /srv/site

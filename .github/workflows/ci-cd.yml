@@ -37,6 +37,7 @@ jobs:
           test "$(codice http://localhost:8080/login)" = 302
           test "$(codice http://localhost:8080/../Caddyfile)" = 302
           curl -fsSI http://localhost:8080/ | grep -qi '^x-frame-options: DENY'
+          curl -fsSI http://localhost:8080/ | grep -qi '^cache-control: no-cache'
           # ogni link si apre in una scheda nuova
           html=$(curl -fsS http://localhost:8080/)
           test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0
