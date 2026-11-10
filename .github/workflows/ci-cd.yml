@@ -25,8 +25,15 @@ jobs:
 
       - name: La pagina risponde come deve
         run: |
+          # i download come li lascia ci/ricevi-build.sh: lo ZIP entra solo col suo sha256
+          dl=$(mktemp -d) && chmod 755 "$dl"
+          head -c 4096 /dev/urandom > prova.zip
+          RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Prova.zip $(sha256sum prova.zip | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.zip
+          ! RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Altro.zip $(printf '0%.0s' $(seq 64))" sh ci/ricevi-build.sh < prova.zip
+          ! RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="../x.zip $(sha256sum prova.zip | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.zip
+          test "$(ls -A "$dl")" = Prova.zip
           # in chiaro sulla 8080, con le regole del sito vero e le restrizioni di compose (sola lettura, senza capacità)
-          c=$(docker run -d --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges:true -p 8080:8080 -e DOMAIN=http://localhost:8080 everbright-servizi)
+          c=$(docker run -d --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges:true -v "$dl:/srv/downloads:ro" -p 8080:8080 -e DOMAIN=http://localhost:8080 everbright-servizi)
           trap 'docker rm -f "$c" >/dev/null' EXIT
           for _ in $(seq 1 20); do curl -fsS -o /dev/null http://localhost:8080/ && break; sleep 1; done
           codice() { curl -s -o /dev/null -w '%{http_code}' "$@"; }
@@ -38,6 +45,11 @@ jobs:
           test "$(codice http://localhost:8080/../Caddyfile)" = 302
           curl -fsSI http://localhost:8080/ | grep -qi '^x-frame-options: DENY'
           curl -fsSI http://localhost:8080/ | grep -qi '^cache-control: no-cache'
+          # i download: il file com'è, da salvare; quello che non c'è è un 404, non la pagina
+          curl -fsS http://localhost:8080/download/Prova.zip | cmp - prova.zip
+          curl -fsSI http://localhost:8080/download/Prova.zip | grep -qi '^content-disposition: attachment'
+          test "$(codice http://localhost:8080/download/Manca.zip)" = 404
+          curl -fsS http://localhost:8080/ | grep -q 'href="/download/EverTranscript-Windows-x64.zip" download'
           # ogni link si apre in una scheda nuova
           html=$(curl -fsS http://localhost:8080/)
           test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0
@@ -77,10 +89,13 @@ jobs:
       - name: Copia sul server
         run: |
           # la versione nuova in app.nuova, poi al posto di app: una copia a metà non diventa mai quella che gira
-          tar czf - Caddyfile Dockerfile docker-compose.yml site \
+          tar czf - Caddyfile Dockerfile docker-compose.yml site ci \
             | ssh "$TARGET" "set -e; rm -rf $DIR/app.nuova; mkdir -p $DIR/app.nuova; tar xzf - -C $DIR/app.nuova; rm -rf $DIR/app.prima; if [ -d $DIR/app ]; then mv $DIR/app $DIR/app.prima; fi; mv $DIR/app.nuova $DIR/app"
           # l'ambiente del servizio dalle variabili della pipeline
           ssh "$TARGET" "umask 077; printf 'DOMAIN=%s\nHTTPS_PORT=%s\n' '$DOMAIN' '$HTTPS_PORT' > $DIR/.env"
+
+      - name: Download e chiavi delle build
+        run: ssh "$TARGET" "sh $DIR/app/ci/prepara-download.sh $DIR"
 
       - name: Avvio
         run: ssh "$TARGET" "set -e; cd $DIR/app; docker compose --env-file $DIR/.env up -d --build --remove-orphans; docker image prune -f >/dev/null"

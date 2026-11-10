@@ -59,10 +59,11 @@
   }
   h1 em { color: var(--ciano); }
 
-  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  /* schede piccole: in uno schermo da portatile ne stanno quattro o cinque per riga */
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
   .servizio {
-    position: relative; display: flex; flex-direction: column; height: 100%; padding: 22px 24px;
-    border: 1px solid var(--filo); border-radius: 24px; background: var(--vetro);
+    position: relative; display: flex; flex-direction: column; height: 100%; padding: 14px 16px;
+    border: 1px solid var(--filo); border-radius: 16px; background: var(--vetro);
     backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
     color: #fff; text-decoration: none; overflow: hidden;
@@ -77,24 +78,24 @@
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 40%), 0 0 40px -10px rgb(0 184 219 / 45%);
   }
   a.servizio:hover::before, a.servizio:focus-visible::before { opacity: 1; }
-  .alto { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .alto { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .icona {
-    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px;
+    display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
     border: 1px solid var(--filo); background: rgb(0 184 219 / 10%); color: var(--ciano);
   }
-  .icona svg { width: 22px; height: 22px; }
+  .icona svg { width: 18px; height: 18px; }
   .etichetta {
-    padding: 4px 12px; border: 1px solid rgb(0 184 219 / 35%); border-radius: 999px; background: rgb(0 184 219 / 10%);
-    color: var(--ciano); font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 2px 9px; border: 1px solid rgb(0 184 219 / 35%); border-radius: 999px; background: rgb(0 184 219 / 10%);
+    color: var(--ciano); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
   }
-  .servizio h2 { margin: 0 0 4px; font-size: 22px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
-  .servizio p { margin: 0; color: var(--grigio); font-size: 14px; }
+  .servizio h2 { margin: 0 0 2px; font-size: 17px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+  .servizio p { margin: 0; color: var(--grigio); font-size: 13px; line-height: 1.4; }
   .vai {
-    display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 14px;
-    font-size: 12px; font-weight: 700; letter-spacing: 3.2px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase;
   }
-  .vai span { color: var(--grigio); font-weight: 500; letter-spacing: 1px; text-transform: none; margin-left: auto; }
-  .vai svg { width: 16px; height: 16px; transition: transform .25s; }
+  .vai span { color: var(--grigio); font-weight: 500; letter-spacing: .5px; text-transform: none; margin-left: auto; font-size: 11px; }
+  .vai svg { width: 14px; height: 14px; transition: transform .25s; }
   a.servizio:hover .vai svg { transform: translateX(4px); }
   .presto { border-style: dashed; cursor: default; }
   .presto h2, .presto .icona { opacity: .55; }
@@ -200,6 +201,17 @@
         <h2>EverDrive</h2>
         <p>I tuoi file e le condivisioni temporanee, in un posto solo.</p>
         <div class="vai">Apri <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>drive.everbright.it</span></div>
+      </a>
+    </li>
+    <li>
+      <a class="servizio" href="/download/EverTranscript-Windows-x64.zip" download>
+        <div class="alto">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+          <span class="etichetta">Download</span>
+        </div>
+        <h2>EverTranscript Windows</h2>
+        <p>Sottotitoli di Teams, registrazione e Prompter. L'ultima build, già provata.</p>
+        <div class="vai">Scarica <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>ZIP x64</span></div>
       </a>
     </li>
     <li>
