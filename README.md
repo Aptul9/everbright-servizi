@@ -17,9 +17,12 @@ password manager, che ancora non c'è. Ogni link si apre in una scheda nuova. Lo
 
 ## Download
 
-| Pulsante | File | Da dove arriva |
+Pulsante **Scarica i nostri prodotti** nella barra, con un menu:
+
+| Voce | File | Da dove arriva |
 |---|---|---|
 | EverTranscript Windows | `/download/EverTranscript-Windows-x64.zip` | `Aptul9/evertranscript-windows`, job di rilascio su main, chiave `evertranscript-windows@github-actions` |
+| AI Plan Usage | setup dalla release GitHub di `Aptul9/ai-plan-usage` (pubblico) | link diretto all'asset della 0.1.1: nome con la versione, da aggiornare a ogni release |
 
 ## Sul server
 
