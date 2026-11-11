@@ -49,7 +49,8 @@ jobs:
           curl -fsS http://localhost:8080/download/Prova.zip | cmp - prova.zip
           curl -fsSI http://localhost:8080/download/Prova.zip | grep -qi '^content-disposition: attachment'
           test "$(codice http://localhost:8080/download/Manca.zip)" = 404
-          curl -fsS http://localhost:8080/ | grep -q 'href="/download/EverTranscript-Windows-x64.zip" download'
+          curl -fsS http://localhost:8080/ | grep -q 'href="/prodotti/"'
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'href="/download/EverTranscript-Windows-x64.zip" download'
           # ogni link si apre in una scheda nuova
           html=$(curl -fsS http://localhost:8080/)
           test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0
