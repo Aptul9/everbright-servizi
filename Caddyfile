@@ -20,6 +20,12 @@
 		Cache-Control no-cache
 		-Server
 	}
+	# le build che le altre pipeline mettono sulla VM (/opt/servizi/downloads, in sola lettura nel container)
+	handle_path /download/* {
+		root * /srv/downloads
+		header Content-Disposition attachment
+		file_server
+	}
 	root * /srv/site
 	# solo i file della pagina; la radice è la cartella e il suo index.html conta come file. Il resto torna alla radice
 	@file file {path} {path}index.html

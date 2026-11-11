@@ -9,7 +9,20 @@ password manager, che ancora non c'è. Ogni link si apre in una scheda nuova. Lo
   si cambia la sua scheda in `index.html`.
 - `Caddyfile`, `Dockerfile`: Caddy con la pagina dentro l'immagine, HTTPS col certificato di Let's Encrypt. Fuori dai file della pagina
   ogni indirizzo torna alla radice.
-- `docker-compose.yml`: il servizio `web`, sul localhost alla porta `HTTPS_PORT`, sola lettura e senza capacità.
+- `docker-compose.yml`: il servizio `web`, sul localhost alla porta `HTTPS_PORT`, sola lettura e senza capacità. Monta in sola lettura
+  `/opt/servizi/downloads` su `/download/`: le build che le pipeline delle app mettono sulla VM, pubbliche.
+- `ci/`: `prepara-download.sh`, lanciato dal deploy, crea la cartella, installa `ricevi-build` in `/opt/servizi/bin` e aggiunge ad
+  `authorized_keys` di `servizi` le chiavi di `chiavi-build.pub`. Quelle chiavi hanno `restrict,command=`: possono solo mandare uno ZIP
+  su stdin con nome e sha256 (`ssh servizi@vm "<nome>.zip <sha256>" < file`), che entra intero e verificato o non entra.
+
+## Download
+
+Pulsante **Scarica i nostri prodotti** nella barra, con un menu:
+
+| Voce | File | Da dove arriva |
+|---|---|---|
+| EverTranscript Windows | `/download/EverTranscript-Windows-x64.zip` | `Aptul9/evertranscript-windows`, job di rilascio su main, chiave `evertranscript-windows@github-actions` |
+| AI Plan Usage | setup dalla release GitHub di `Aptul9/ai-plan-usage` (pubblico) | link diretto all'asset della 0.1.1: nome con la versione, da aggiornare a ogni release |
 
 ## Sul server
 

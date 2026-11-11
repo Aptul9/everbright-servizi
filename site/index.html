@@ -50,6 +50,22 @@
     box-shadow: 0 0 20px rgb(255 255 255 / 10%); transition: box-shadow .2s, transform .2s;
   }
   .pillola:hover, .pillola:focus-visible { box-shadow: 0 0 28px rgb(255 255 255 / 35%); transform: translateY(-1px); outline: none; }
+  /* il menu dei prodotti scende sopra le schede, che col vetro fanno ognuna un livello a sé */
+  .barra { position: relative; z-index: 10; }
+  .azioni { display: flex; align-items: center; gap: 10px; }
+  .prodotti summary { white-space: nowrap; }
+  .prodotti { position: relative; }
+  .prodotti summary { list-style: none; cursor: pointer; background: var(--ciano); color: #000; }
+  .prodotti summary::-webkit-details-marker { display: none; }
+  .menu {
+    position: absolute; right: 0; top: calc(100% + 10px); z-index: 5; width: 320px; padding: 6px;
+    border: 1px solid var(--filo); border-radius: 16px; background: rgb(20 20 20 / 95%);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 60%);
+  }
+  .menu a { display: block; padding: 10px 12px; border-radius: 10px; color: #fff; text-decoration: none; }
+  .menu a:hover, .menu a:focus-visible { background: rgb(0 184 219 / 12%); outline: none; }
+  .menu b { display: block; font-size: 14px; }
+  .menu small { display: block; color: var(--grigio); font-size: 12px; }
 
   /* il titolo è una riga: lo spazio è per i servizi, che si vedono tutti senza scorrere */
   .titolo { margin: 32px 0 20px; }
@@ -59,10 +75,11 @@
   }
   h1 em { color: var(--ciano); }
 
-  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  /* schede piccole: in uno schermo da portatile ne stanno quattro o cinque per riga */
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
   .servizio {
-    position: relative; display: flex; flex-direction: column; height: 100%; padding: 22px 24px;
-    border: 1px solid var(--filo); border-radius: 24px; background: var(--vetro);
+    position: relative; display: flex; flex-direction: column; height: 100%; padding: 14px 16px;
+    border: 1px solid var(--filo); border-radius: 16px; background: var(--vetro);
     backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
     color: #fff; text-decoration: none; overflow: hidden;
@@ -77,24 +94,24 @@
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 40%), 0 0 40px -10px rgb(0 184 219 / 45%);
   }
   a.servizio:hover::before, a.servizio:focus-visible::before { opacity: 1; }
-  .alto { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .alto { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .icona {
-    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px;
+    display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
     border: 1px solid var(--filo); background: rgb(0 184 219 / 10%); color: var(--ciano);
   }
-  .icona svg { width: 22px; height: 22px; }
+  .icona svg { width: 18px; height: 18px; }
   .etichetta {
-    padding: 4px 12px; border: 1px solid rgb(0 184 219 / 35%); border-radius: 999px; background: rgb(0 184 219 / 10%);
-    color: var(--ciano); font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 2px 9px; border: 1px solid rgb(0 184 219 / 35%); border-radius: 999px; background: rgb(0 184 219 / 10%);
+    color: var(--ciano); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
   }
-  .servizio h2 { margin: 0 0 4px; font-size: 22px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
-  .servizio p { margin: 0; color: var(--grigio); font-size: 14px; }
+  .servizio h2 { margin: 0 0 2px; font-size: 17px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+  .servizio p { margin: 0; color: var(--grigio); font-size: 13px; line-height: 1.4; }
   .vai {
-    display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 14px;
-    font-size: 12px; font-weight: 700; letter-spacing: 3.2px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase;
   }
-  .vai span { color: var(--grigio); font-weight: 500; letter-spacing: 1px; text-transform: none; margin-left: auto; }
-  .vai svg { width: 16px; height: 16px; transition: transform .25s; }
+  .vai span { color: var(--grigio); font-weight: 500; letter-spacing: .5px; text-transform: none; margin-left: auto; font-size: 11px; }
+  .vai svg { width: 14px; height: 14px; transition: transform .25s; }
   a.servizio:hover .vai svg { transform: translateX(4px); }
   .presto { border-style: dashed; cursor: default; }
   .presto h2, .presto .icona { opacity: .55; }
@@ -107,6 +124,9 @@
     .marchio img { width: 40px; }
     .marchio b { font-size: 19px; }
     .pillola { padding: 10px 18px; font-size: 11px; letter-spacing: 2px; }
+    .chiara { display: none; }
+    .prodotti summary { padding: 10px 12px; font-size: 9px; letter-spacing: 1px; }
+    .menu { width: min(320px, calc(100vw - 32px)); }
     .titolo { margin: 24px 0 16px; }
     /* due colonne e solo l'essenziale: i servizi stanno tutti nello schermo del telefono */
     ul { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -128,7 +148,20 @@
       <img src="/logo-icon.png" alt="">
       <span><b>EVERBRIGHT</b><small>IT SERVICES</small></span>
     </a>
-    <a class="pillola" href="https://www.everbright.it" target="_blank" rel="noopener noreferrer">Sito</a>
+    <div class="azioni">
+      <details class="prodotti">
+        <summary class="pillola">Scarica i nostri prodotti</summary>
+        <div class="menu">
+          <a href="/download/EverTranscript-Windows-x64.zip" download>
+            <b>EverTranscript Windows</b><small>Sottotitoli di Teams, registrazione e Prompter · ZIP x64</small>
+          </a>
+          <a href="https://github.com/Aptul9/ai-plan-usage/releases/latest/download/ai-plan-usage-0.1.1-windows-x64-setup.exe" target="_blank" rel="noopener noreferrer">
+            <b>AI Plan Usage</b><small>Consumo dei piani Claude, Codex e Copilot nella tray · setup x64</small>
+          </a>
+        </div>
+      </details>
+      <a class="pillola chiara" href="https://www.everbright.it" target="_blank" rel="noopener noreferrer">Sito</a>
+    </div>
   </header>
 
   <section class="titolo">
@@ -218,6 +251,12 @@
   <footer>© Everbright · IT Services</footer>
 </div>
 <script>
+  // il menu dei prodotti si chiude cliccando fuori o con Esc
+  (() => {
+    const menu = document.querySelector(".prodotti");
+    addEventListener("click", e => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
+    addEventListener("keydown", e => { if (e.key === "Escape") menu.open = false; });
+  })();
   // Cielo stellato come sul sito: punti bianchi fermi, qualcuno che pulsa piano. Ferme del tutto con "riduci animazioni".
   (() => {
     const tela = document.getElementById("stelle");
