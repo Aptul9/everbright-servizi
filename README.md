@@ -17,7 +17,7 @@ password manager, che ancora non c'è. Ogni link si apre in una scheda nuova. Lo
 
 ## Download
 
-Pulsante **Scarica i nostri prodotti** nella barra, con un menu:
+Riquadro **Scarica i nostri prodotti**, che apre /prodotti/ (site/prodotti/index.html), un riquadro per prodotto:
 
 | Voce | File | Da dove arriva |
 |---|---|---|
