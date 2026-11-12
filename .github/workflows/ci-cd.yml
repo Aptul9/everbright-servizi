@@ -31,7 +31,13 @@ jobs:
           RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Prova.zip $(sha256sum prova.zip | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.zip
           ! RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Altro.zip $(printf '0%.0s' $(seq 64))" sh ci/ricevi-build.sh < prova.zip
           ! RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="../x.zip $(sha256sum prova.zip | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.zip
-          test "$(ls -A "$dl")" = Prova.zip
+          # il JSON della versione: entra col suo hash, altre estensioni no, oltre 64 KiB viene troncato e scartato
+          printf '{"version":"0.4.0"}\n' > prova.json
+          RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Prova.json $(sha256sum prova.json | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.json
+          ! RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Prova.sh $(sha256sum prova.json | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.json
+          head -c 70000 /dev/urandom > grande.json
+          ! RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Grande.json $(sha256sum grande.json | cut -d' ' -f1)" sh ci/ricevi-build.sh < grande.json
+          test "$(ls -A "$dl" | tr '\n' ' ')" = "Prova.json Prova.zip "
           # in chiaro sulla 8080, con le regole del sito vero e le restrizioni di compose (sola lettura, senza capacità)
           c=$(docker run -d --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges:true -v "$dl:/srv/downloads:ro" -p 8080:8080 -e DOMAIN=http://localhost:8080 everbright-servizi)
           trap 'docker rm -f "$c" >/dev/null' EXIT
@@ -47,6 +53,7 @@ jobs:
           curl -fsSI http://localhost:8080/ | grep -qi '^cache-control: no-cache'
           # i download: il file com'è, da salvare; quello che non c'è è un 404, non la pagina
           curl -fsS http://localhost:8080/download/Prova.zip | cmp - prova.zip
+          curl -fsS http://localhost:8080/download/Prova.json | cmp - prova.json
           curl -fsSI http://localhost:8080/download/Prova.zip | grep -qi '^content-disposition: attachment'
           test "$(codice http://localhost:8080/download/Manca.zip)" = 404
           curl -fsS http://localhost:8080/ | grep -q 'href="/prodotti/"'
