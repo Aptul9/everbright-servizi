@@ -90,6 +90,8 @@
   }
   .servizio h2 { margin: 0 0 2px; font-size: 17px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
   .servizio p { margin: 0; color: var(--grigio); font-size: 13px; line-height: 1.4; }
+  /* la riga della versione la scrive lo script, solo se il JSON accanto al download si legge */
+  .versione { display: block; margin-top: 6px; color: var(--grigio); font-size: 11px; letter-spacing: .5px; }
   .vai {
     display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 10px;
     font-size: 11px; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase;
@@ -138,7 +140,7 @@
 
   <ul>
     <li>
-      <a class="servizio" href="/download/EverTranscript-Windows-x64.zip" download>
+      <a class="servizio" href="/download/EverTranscript-Windows-x64.zip" download data-versione="/download/EverTranscript-Windows-x64.json">
         <div class="alto">
           <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 10h4M7 14h7M14 10h3"/></svg></span>
           <span class="etichetta">Windows</span>
@@ -192,6 +194,26 @@
     prepara(); addEventListener("resize", () => { prepara(); if (ferme) disegna(0); });
     ferme ? disegna(0) : requestAnimationFrame(disegna);
   })();
+
+  // Versione e data dal JSON che la pipeline dell'app mette accanto al download: si aggiornano a ogni rilascio, senza toccare
+  // il sito. La data è quella in cui il JSON è arrivato sul server (Last-Modified). JSON assente o rotto: la scheda resta com'è.
+  for (const scheda of document.querySelectorAll("[data-versione]")) {
+    fetch(scheda.dataset.versione, { cache: "no-cache", signal: AbortSignal.timeout(5000) })
+      .then(async (r) => {
+        if (!r.ok) return;
+        const j = await r.json();
+        if (typeof j.version !== "string" || !j.version) return;
+        let testo = "Versione " + j.version;
+        const data = new Date(r.headers.get("Last-Modified") || NaN);
+        if (!isNaN(data)) testo += " del " + data.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+        const riga = document.createElement("span");
+        riga.className = "versione";
+        riga.textContent = testo;
+        if (typeof j.sha256 === "string") riga.title = "sha256 " + j.sha256 + (typeof j.commit === "string" ? "\ncommit " + j.commit.slice(0, 12) : "");
+        scheda.querySelector(".vai").before(riga);
+      })
+      .catch(() => {});
+  }
 </script>
 </body>
 </html>

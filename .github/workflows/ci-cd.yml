@@ -58,6 +58,8 @@ jobs:
           test "$(codice http://localhost:8080/download/Manca.zip)" = 404
           curl -fsS http://localhost:8080/ | grep -q 'href="/prodotti/"'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'href="/download/EverTranscript-Windows-x64.zip" download'
+          # versione e data sulla scheda: lette dal JSON accanto allo ZIP quando la pagina si apre
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/EverTranscript-Windows-x64.json"'
           # ogni link si apre in una scheda nuova
           html=$(curl -fsS http://localhost:8080/)
           test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0
