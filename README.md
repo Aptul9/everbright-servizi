@@ -24,6 +24,8 @@ Riquadro **Scarica i nostri prodotti**, che apre /prodotti/ (site/prodotti/index
 | EverTranscript Windows | `/download/EverTranscript-Windows-x64.zip` | `Aptul9/evertranscript-windows`, job di rilascio su main, chiave `evertranscript-windows@github-actions` |
 | AI Plan Usage | setup dalla release GitHub di `Aptul9/ai-plan-usage` (pubblico) | link diretto all'asset della 0.1.1: nome con la versione, da aggiornare a ogni release |
 
+Una scheda con `data-versione="<url del JSON>"` mostra "Versione X del <data>", letta all'apertura della pagina dal JSON che la pipeline dell'app mette accanto al download (`version`; `sha256` e `commit` nel tooltip). La data è il `Last-Modified` del JSON, cioè quando è arrivato sul server. Se il JSON non si legge la riga non compare e la scheda resta com'è. Oggi ce l'ha solo EverTranscript Windows: AI Plan Usage non pubblica un JSON.
+
 ## Sul server
 
 La VM è quella di OE Copilot e TeamsRelay (217.76.49.98). La 443 è di sslh, che gira il TLS per nome (SNI): `servizi.everbright.it` va
