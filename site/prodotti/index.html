@@ -73,11 +73,11 @@
     content: ""; position: absolute; inset: -40% -20% auto auto; width: 260px; height: 260px; border-radius: 50%;
     background: radial-gradient(circle, rgb(0 184 219 / 22%), transparent 70%); opacity: 0; transition: opacity .25s;
   }
-  a.servizio:hover, a.servizio:focus-visible {
+  a.servizio[href]:hover, a.servizio[href]:focus-visible {
     border-color: rgb(0 184 219 / 45%); transform: translateY(-4px); outline: none;
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 40%), 0 0 40px -10px rgb(0 184 219 / 45%);
   }
-  a.servizio:hover::before, a.servizio:focus-visible::before { opacity: 1; }
+  a.servizio[href]:hover::before, a.servizio[href]:focus-visible::before { opacity: 1; }
   .alto { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .icona {
     display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
@@ -98,10 +98,49 @@
   }
   .vai span { color: var(--grigio); font-weight: 500; letter-spacing: .5px; text-transform: none; margin-left: auto; font-size: 11px; }
   .vai svg { width: 14px; height: 14px; transition: transform .25s; }
-  a.servizio:hover .vai svg { transform: translateX(4px); }
+  a.servizio[href]:hover .vai svg { transform: translateX(4px); }
   .presto { border-style: dashed; cursor: default; }
   .presto h2, .presto .icona { opacity: .55; }
   .presto .etichetta { border-color: var(--filo); background: var(--vetro); color: var(--grigio); }
+  .presto .vai { color: var(--grigio); }
+
+  /* la scelta tra installer e ZIP: il vetro scuro della barra del sito, sopra la pagina oscurata */
+  body:has(dialog[open]) { overflow: hidden; }
+  .scelta {
+    width: min(560px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 0; overflow: auto;
+    border: 1px solid rgb(255 255 255 / 20%); border-radius: 28px; background: rgb(18 18 18 / 98%); color: #fafafa;
+    box-shadow: 0 8px 32px rgb(0 0 0 / 30%), 0 0 60px -20px rgb(0 184 219 / 40%);
+  }
+  .scelta[open] { animation: entra .2s ease-out; }
+  .scelta::backdrop { background: rgb(0 0 0 / 70%); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  @keyframes entra { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+  .scelta-corpo { padding: 20px; }
+  .scelta-testa { display: flex; align-items: center; gap: 12px; }
+  .scelta-testa h2 { margin: 0; font-size: 19px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
+  .chiudi {
+    display: grid; place-items: center; flex: none; width: 36px; height: 36px; margin-left: auto; padding: 0;
+    border: 1px solid var(--filo); border-radius: 50%; background: var(--vetro); color: var(--grigio); cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .chiudi svg { width: 16px; height: 16px; }
+  .chiudi:hover, .chiudi:focus-visible { border-color: rgb(0 184 219 / 60%); color: var(--ciano); outline: none; }
+  .opzioni { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .opzione {
+    display: flex; flex-direction: column; padding: 16px; border: 1px solid var(--filo); border-radius: 16px; background: var(--vetro);
+  }
+  .opzione .icona { margin-bottom: 10px; }
+  .opzione h3 { margin: 0 0 2px; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .opzione p { margin: 0; color: var(--grigio); font-size: 12.5px; line-height: 1.4; }
+  .opzione .versione { margin-top: 8px; }
+  .peso { display: block; color: var(--grigio); font-size: 11px; letter-spacing: .5px; }
+  .bottone {
+    display: block; margin-top: auto; padding: 10px 16px; border: 1px solid #fff; border-radius: 999px; background: #fff; color: #000;
+    font-size: 11px; font-weight: 700; letter-spacing: 2.4px; text-align: center; text-transform: uppercase; text-decoration: none;
+    transition: box-shadow .2s, transform .2s;
+  }
+  .dati { margin-bottom: 14px; }
+  .bottone[href]:hover, .bottone[href]:focus-visible { box-shadow: 0 0 24px rgb(255 255 255 / 35%); transform: translateY(-1px); outline: none; }
+  .bottone:not([href]) { border: 1px dashed var(--filo); background: transparent; color: var(--grigio); cursor: default; }
 
   footer { margin-top: 24px; color: #6a7282; font-size: 13px; text-align: center; letter-spacing: 1px; }
 
@@ -119,7 +158,12 @@
     .servizio h2 { font-size: 17px; }
     .vai { padding-top: 10px; font-size: 11px; letter-spacing: 2.4px; }
   }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (max-width: 520px) {
+    .scelta { border-radius: 22px; }
+    .scelta-corpo { padding: 16px; }
+    .opzioni { grid-template-columns: 1fr; gap: 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body>
@@ -140,18 +184,29 @@
 
   <ul>
     <li>
-      <a class="servizio" href="/download/EverTranscript-Windows-x64.zip" download data-versione="/download/EverTranscript-Windows-x64.json">
+      <a class="servizio" href="/download/EverTranscript-Windows-x64.zip" download data-versione="/download/EverTranscript-Windows-x64.json" data-scelta="scarica-evertranscript" aria-haspopup="dialog">
         <div class="alto">
           <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 10h4M7 14h7M14 10h3"/></svg></span>
           <span class="etichetta">Windows</span>
         </div>
         <h2>EverTranscript Windows</h2>
         <p>Sottotitoli di Teams, registrazione e Prompter.</p>
-        <div class="vai">Scarica <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>ZIP x64</span></div>
+        <div class="vai">Scarica <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>exe o ZIP x64</span></div>
       </a>
     </li>
     <li>
-      <a class="servizio" href="https://github.com/Aptul9/ai-plan-usage/releases/latest/download/ai-plan-usage-0.1.1-windows-x64-setup.exe" target="_blank" rel="noopener noreferrer">
+      <a class="servizio presto" aria-disabled="true" data-versione="/download/AgentAwake-Windows-x64.json" data-dal-json>
+        <div class="alto">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-4z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5v3M12 3.5v3"/></svg></span>
+          <span class="etichetta">In arrivo</span>
+        </div>
+        <h2>Agent Awake</h2>
+        <p>Tiene sveglio il portatile, anche col coperchio chiuso, mentre un agente AI lavora.</p>
+        <div class="vai">In arrivo</div>
+      </a>
+    </li>
+    <li>
+      <a class="servizio" href="https://github.com/Aptul9/ai-plan-usage/releases/latest/download/ai-plan-usage-0.1.1-windows-x64-setup.exe" target="_blank" rel="noopener noreferrer" data-versione="/download/AI-Plan-Usage-Windows-x64.json" data-dal-json>
         <div class="alto">
           <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
           <span class="etichetta">Windows</span>
@@ -162,6 +217,31 @@
       </a>
     </li>
   </ul>
+
+  <dialog class="scelta" id="scarica-evertranscript" aria-labelledby="scelta-titolo">
+    <div class="scelta-corpo">
+      <div class="scelta-testa">
+        <h2 id="scelta-titolo">EverTranscript Windows</h2>
+        <button class="chiudi" type="button" aria-label="Chiudi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="opzioni">
+        <section class="opzione" data-pacchetto="setup" aria-labelledby="opzione-setup">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11M7 9.5l5 5 5-5"/><path d="M4 15v3a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18v-3"/></svg></span>
+          <h3 id="opzione-setup">Installer (.exe)</h3>
+          <p>Installazione guidata per Windows.</p>
+          <div class="dati"></div>
+          <a class="bottone" aria-disabled="true">In arrivo</a>
+        </section>
+        <section class="opzione" data-pacchetto="zip" aria-labelledby="opzione-zip">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h3.5l2 2.5H18a2.5 2.5 0 0 1 2.5 2.5v7.5A2.5 2.5 0 0 1 18 20H6a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M12 11v2M12 15v2"/></svg></span>
+          <h3 id="opzione-zip">ZIP portatile</h3>
+          <p>Da estrarre in una cartella e avviare, senza installazione.</p>
+          <div class="dati"></div>
+          <a class="bottone" href="/download/EverTranscript-Windows-x64.zip" download>Scarica</a>
+        </section>
+      </div>
+    </div>
+  </dialog>
 
   <footer>© Everbright · IT Services</footer>
 </div>
@@ -195,24 +275,77 @@
     ferme ? disegna(0) : requestAnimationFrame(disegna);
   })();
 
-  // Versione e data dal JSON che la pipeline dell'app mette accanto al download: si aggiornano a ogni rilascio, senza toccare
-  // il sito. La data è quella in cui il JSON è arrivato sul server (Last-Modified). JSON assente o rotto: la scheda resta com'è.
+  // Versione, data, peso e nome del file dal JSON che la pipeline dell'app mette accanto al download
+  // ({version, sha256, bytes, commit, file}): si aggiornano a ogni rilascio, senza toccare il sito. La data è quella in cui il
+  // JSON è arrivato sul server (Last-Modified). JSON assente o rotto: la scheda resta com'è, con il link che ha già o "In arrivo".
+  const nomeFile = (f) => typeof f === "string" && /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.(zip|exe|msi)$/.test(f);
+  const peso = (b) => Number.isFinite(b) && b > 0 ? (b / 1e6).toLocaleString("it-IT", { maximumFractionDigits: 1 }) + " MB" : "";
+  const freccia = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+
+  function riga(testo, sha256, commit) {
+    const r = document.createElement("span");
+    r.className = "versione";
+    r.textContent = testo;
+    if (typeof sha256 === "string") r.title = "sha256 " + sha256 + (typeof commit === "string" ? "\ncommit " + commit.slice(0, 12) : "");
+    return r;
+  }
+
+  // il pacchetto del popup: versione, peso e, per l'installer, il link quando c'è
+  function pacchetto(chi, versione, p, href) {
+    const box = document.querySelector('[data-pacchetto="' + chi + '"]');
+    box.querySelector(".dati").replaceChildren(riga(versione, p.sha256, p.commit));
+    if (peso(p.bytes)) box.querySelector(".dati").append(Object.assign(document.createElement("span"), { className: "peso", textContent: peso(p.bytes) }));
+    if (href) {
+      const b = box.querySelector(".bottone");
+      b.href = href; b.download = ""; b.textContent = "Scarica"; b.removeAttribute("aria-disabled");
+    }
+  }
+
+  // la scheda di un prodotto che finora non aveva il download sul nostro server: ora punta al file accanto al JSON
+  function attiva(scheda, j) {
+    scheda.href = "/download/" + j.file;
+    scheda.download = "";
+    scheda.removeAttribute("target"); scheda.removeAttribute("rel"); scheda.removeAttribute("aria-disabled");
+    scheda.classList.remove("presto");
+    scheda.querySelector(".etichetta").textContent = "Windows";
+    const tipo = j.file.endsWith(".zip") ? "ZIP x64" : "setup x64";
+    scheda.querySelector(".vai").innerHTML = "Scarica " + freccia + "<span></span>";
+    scheda.querySelector(".vai span").textContent = [tipo, peso(j.bytes)].filter(Boolean).join(" · ");
+  }
+
   for (const scheda of document.querySelectorAll("[data-versione]")) {
     fetch(scheda.dataset.versione, { cache: "no-cache", signal: AbortSignal.timeout(5000) })
       .then(async (r) => {
         if (!r.ok) return;
         const j = await r.json();
         if (typeof j.version !== "string" || !j.version) return;
+        // senza il file, una scheda che lo prende dal JSON resta com'è: niente versione accanto a un link che non è quello
+        if (scheda.hasAttribute("data-dal-json") && !nomeFile(j.file)) return;
         let testo = "Versione " + j.version;
         const data = new Date(r.headers.get("Last-Modified") || NaN);
         if (!isNaN(data)) testo += " del " + data.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
-        const riga = document.createElement("span");
-        riga.className = "versione";
-        riga.textContent = testo;
-        if (typeof j.sha256 === "string") riga.title = "sha256 " + j.sha256 + (typeof j.commit === "string" ? "\ncommit " + j.commit.slice(0, 12) : "");
-        scheda.querySelector(".vai").before(riga);
+        if (scheda.hasAttribute("data-dal-json")) attiva(scheda, j);
+        scheda.querySelector(".vai").before(riga(testo, j.sha256, j.commit));
+        if (scheda.dataset.scelta) {
+          pacchetto("zip", testo, j);
+          const s = j.setup;
+          if (s && typeof s === "object" && nomeFile(s.file)) pacchetto("setup", testo, s, "/download/" + s.file);
+        }
       })
       .catch(() => {});
+  }
+
+  // la scheda con data-scelta apre il popup invece di scaricare; senza JavaScript resta il link allo ZIP
+  for (const scheda of document.querySelectorAll("[data-scelta]")) {
+    const popup = document.getElementById(scheda.dataset.scelta);
+    scheda.addEventListener("click", (e) => {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      popup.showModal();
+    });
+    popup.querySelector(".chiudi").addEventListener("click", () => popup.close());
+    // un clic sul fondo oscurato arriva al dialog stesso: il contenuto lo copre tutto
+    popup.addEventListener("click", (e) => { if (e.target === popup) popup.close(); });
   }
 </script>
 </body>

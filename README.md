@@ -21,10 +21,15 @@ Riquadro **Scarica i nostri prodotti**, che apre /prodotti/ (site/prodotti/index
 
 | Voce | File | Da dove arriva |
 |---|---|---|
-| EverTranscript Windows | `/download/EverTranscript-Windows-x64.zip` | `Aptul9/evertranscript-windows`, job di rilascio su main, chiave `evertranscript-windows@github-actions` |
-| AI Plan Usage | setup dalla release GitHub di `Aptul9/ai-plan-usage` (pubblico) | link diretto all'asset della 0.1.1: nome con la versione, da aggiornare a ogni release |
+| EverTranscript Windows | `/download/EverTranscript-Windows-x64.zip`, installer dal campo `setup` del JSON | `Aptul9/evertranscript-windows`, job di rilascio su main, chiave `evertranscript-windows@github-actions` |
+| Agent Awake | il `file` di `/download/AgentAwake-Windows-x64.json` | finché il JSON non c'è la scheda è "In arrivo", senza link |
+| AI Plan Usage | il `file` di `/download/AI-Plan-Usage-Windows-x64.json` | finché il JSON non c'è, link diretto all'asset 0.1.1 della release GitHub di `Aptul9/ai-plan-usage` |
 
-Una scheda con `data-versione="<url del JSON>"` mostra "Versione X del <data>", letta all'apertura della pagina dal JSON che la pipeline dell'app mette accanto al download (`version`; `sha256` e `commit` nel tooltip). La data è il `Last-Modified` del JSON, cioè quando è arrivato sul server. Se il JSON non si legge la riga non compare e la scheda resta com'è. Oggi ce l'ha solo EverTranscript Windows: AI Plan Usage non pubblica un JSON.
+Ogni prodotto mette in `/download/` un JSON con almeno `{"version","sha256","bytes","commit","file"}`, dove `file` è il nome del download nella stessa cartella. La pagina lo legge all'apertura (`data-versione="<url del JSON>"` sulla scheda) e mostra "Versione X del <data>": la data è il `Last-Modified` del JSON, cioè quando è arrivato sul server; `sha256` e `commit` nel tooltip. Se il JSON manca o è rotto la scheda resta com'è.
+
+- Le schede con `data-dal-json` (Agent Awake, AI Plan Usage) prendono anche il link dal `file` del JSON, con il peso da `bytes`. Un `file` che non è un nome semplice `.zip`, `.exe` o `.msi` (percorsi, URL) vale come JSON assente.
+- La scheda di EverTranscript apre un popup con due riquadri: "Installer (.exe)" da `setup: {"file","sha256","bytes"}` e "ZIP portatile" dai campi principali. Senza `setup` l'installer è "In arrivo" e lo ZIP funziona. Senza JavaScript la scheda scarica lo ZIP.
+- `ci/ricevi-build.sh` oggi accetta solo `.zip` e `.json`: un installer `.exe` non entra da quella strada finché non la si allarga, e un prodotto nuovo ha bisogno della sua chiave in `chiavi-build.pub`.
 
 ## Sul server
 

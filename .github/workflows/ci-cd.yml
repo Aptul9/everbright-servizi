@@ -60,6 +60,11 @@ jobs:
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'href="/download/EverTranscript-Windows-x64.zip" download'
           # versione e data sulla scheda: lette dal JSON accanto allo ZIP quando la pagina si apre
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/EverTranscript-Windows-x64.json"'
+          # la scheda EverTranscript apre il popup installer/ZIP; Agent Awake e AI Plan Usage prendono il download dal loro JSON
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-scelta="scarica-evertranscript"'
+          curl -fsS http://localhost:8080/prodotti/ | grep -q '<dialog class="scelta" id="scarica-evertranscript"'
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AgentAwake-Windows-x64.json" data-dal-json'
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AI-Plan-Usage-Windows-x64.json" data-dal-json'
           # ogni link si apre in una scheda nuova
           html=$(curl -fsS http://localhost:8080/)
           test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0
