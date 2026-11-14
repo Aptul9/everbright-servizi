@@ -29,7 +29,6 @@ Ogni prodotto mette in `/download/` un JSON con almeno `{"version","sha256","byt
 
 - Le schede con `data-dal-json` (Agent Awake, AI Plan Usage) prendono anche il link dal `file` del JSON, con il peso da `bytes`. Un `file` che non è un nome semplice `.zip`, `.exe` o `.msi` (percorsi, URL) vale come JSON assente.
 - La scheda di EverTranscript apre un popup con due riquadri: "Installer (.exe)" da `setup: {"file","sha256","bytes"}` e "ZIP portatile" dai campi principali. Senza `setup` l'installer è "In arrivo" e lo ZIP funziona. Senza JavaScript la scheda scarica lo ZIP.
-- `ci/ricevi-build.sh` oggi accetta solo `.zip` e `.json`: un installer `.exe` non entra da quella strada finché non la si allarga, e un prodotto nuovo ha bisogno della sua chiave in `chiavi-build.pub`.
 
 ## Sul server
 
