@@ -69,6 +69,12 @@ jobs:
           curl -fsS http://localhost:8080/prodotti/ | grep -q '<dialog class="scelta" id="scarica-evertranscript"'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AgentAwake-Windows-x64.json" data-dal-json'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AI-Plan-Usage-Windows-x64.json" data-dal-json'
+          # le estensioni Chrome: scheda nuova sul Chrome Web Store, icona servita dal sito
+          prodotti=$(curl -fsS http://localhost:8080/prodotti/)
+          grep -q '<a class="estensione" href="https://chromewebstore.google.com/detail/evertranscript/ghedbbgihpofhhdkchppfdaokiblfahd" target="_blank" rel="noopener noreferrer">' <<<"$prodotti"
+          grep -q '<a class="estensione" href="https://chromewebstore.google.com/detail/teams-supercopy/kmkdhdmkgkbfgcpefhockpplokelgkfk" target="_blank" rel="noopener noreferrer">' <<<"$prodotti"
+          test "$(codice http://localhost:8080/prodotti/evertranscript-chrome.png)" = 200
+          test "$(codice http://localhost:8080/prodotti/teams-supercopy.png)" = 200
           # ogni link si apre in una scheda nuova
           html=$(curl -fsS http://localhost:8080/)
           test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0

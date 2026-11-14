@@ -17,7 +17,7 @@ password manager, che ancora non c'è. Ogni link si apre in una scheda nuova. Lo
 
 ## Download
 
-Riquadro **Scarica i nostri prodotti**, che apre /prodotti/ (site/prodotti/index.html), un riquadro per prodotto:
+Riquadro **Scarica i nostri prodotti**, che apre /prodotti/ (site/prodotti/index.html): a sinistra le app Windows, un riquadro per prodotto; a destra, oltre un filo verticale, le estensioni Chrome. Sul telefono le due parti stanno una sotto l'altra.
 
 | Voce | File | Da dove arriva |
 |---|---|---|
@@ -29,6 +29,13 @@ Ogni prodotto mette in `/download/` un JSON con almeno `{"version","sha256","byt
 
 - Le schede con `data-dal-json` (Agent Awake, AI Plan Usage) prendono anche il link dal `file` del JSON, con il peso da `bytes`. Un `file` che non è un nome semplice `.zip`, `.exe` o `.msi` (percorsi, URL) vale come JSON assente.
 - La scheda di EverTranscript apre un popup con due riquadri: "Installer (.exe)" da `setup: {"file","sha256","bytes"}` e "ZIP portatile" dai campi principali. Senza `setup` l'installer è "In arrivo" e lo ZIP funziona. Senza JavaScript la scheda scarica lo ZIP.
+
+Le estensioni Chrome sono schede quadrate con link fisso alla loro pagina del Chrome Web Store, in una scheda nuova. Le icone sono copie in `site/prodotti/`: se un'estensione cambia icona, si ricopia il file.
+
+| Estensione | Chrome Web Store | Icona |
+|---|---|---|
+| EverTranscript | `https://chromewebstore.google.com/detail/evertranscript/ghedbbgihpofhhdkchppfdaokiblfahd` | `evertranscript-chrome.png`, da `extension/icon.png` di `Aptul9/evertranscript` |
+| Teams Supercopy | `https://chromewebstore.google.com/detail/teams-supercopy/kmkdhdmkgkbfgcpefhockpplokelgkfk` | `teams-supercopy.png`, da `assets/icon.png` di `Aptul9/Teams-Supercopy` |
 
 ## Sul server
 
