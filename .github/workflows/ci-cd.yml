@@ -17,6 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Chiavi delle build
+        run: |
+          # il deploy le mette in authorized_keys: ogni riga lancia solo ricevi-build, una chiave diversa per ogni prodotto
+          test -z "$(grep -v '^$' ci/chiavi-build.pub | grep -Ev '^restrict,command="/opt/servizi/bin/ricevi-build" ssh-ed25519 [A-Za-z0-9+/]{68} [a-z0-9-]+@github-actions$')"
+          test -z "$(grep -o 'ssh-ed25519 [^ ]*' ci/chiavi-build.pub | sort | uniq -d)"
+          test -z "$(awk 'NF { print $NF }' ci/chiavi-build.pub | sort | uniq -d)"
+          grep -q ' evertranscript-windows@github-actions$' ci/chiavi-build.pub
+          grep -q ' teams-supercopy@github-actions$' ci/chiavi-build.pub
+
       - name: Immagine e configurazione di Caddy
         run: |
           docker build -q -t everbright-servizi .
@@ -69,6 +78,7 @@ jobs:
           curl -fsS http://localhost:8080/prodotti/ | grep -q '<dialog class="scelta" id="scarica-evertranscript"'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AgentAwake-Windows-x64.json" data-dal-json'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AI-Plan-Usage-Windows-x64.json" data-dal-json'
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/TeamsSupercopy-Windows.json" data-dal-json'
           # le estensioni Chrome: scheda nuova sul Chrome Web Store, icona servita dal sito
           prodotti=$(curl -fsS http://localhost:8080/prodotti/)
           grep -q '<a class="estensione" href="https://chromewebstore.google.com/detail/evertranscript/ghedbbgihpofhhdkchppfdaokiblfahd" target="_blank" rel="noopener noreferrer">' <<<"$prodotti"
