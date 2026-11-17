@@ -1,1 +1,2 @@
 restrict,command="/opt/servizi/bin/ricevi-build" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMjwAtgDcjpp7mDotCUY/PtUIRiyQi603DAz9FZGalMG evertranscript-windows@github-actions
+restrict,command="/opt/servizi/bin/ricevi-build" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILPsqzoosQr6R5W8ZNjuaLbWArlMzCnjaR1WDd8w/yi8 teams-supercopy@github-actions

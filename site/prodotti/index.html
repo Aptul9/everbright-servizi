@@ -84,6 +84,7 @@
     border: 1px solid var(--filo); background: rgb(0 184 219 / 10%); color: var(--ciano);
   }
   .icona svg { width: 18px; height: 18px; }
+  .icona img { width: 24px; height: 24px; }
   .etichetta {
     padding: 2px 9px; border: 1px solid rgb(0 184 219 / 35%); border-radius: 999px; background: rgb(0 184 219 / 10%);
     color: var(--ciano); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
@@ -266,6 +267,17 @@
             <div class="vai">Scarica <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>setup x64</span></div>
           </a>
         </li>
+        <li>
+          <a class="servizio presto" aria-disabled="true" data-versione="/download/TeamsSupercopy-Windows.json" data-dal-json>
+            <div class="alto">
+              <span class="icona"><img src="/prodotti/teams-supercopy.png" alt="" width="24" height="24"></span>
+              <span class="etichetta">In arrivo</span>
+            </div>
+            <h3>Teams Supercopy</h3>
+            <p>Ctrl+C in Teams copia i messaggi con autore, ora, citazioni e immagini.</p>
+            <div class="vai">In arrivo</div>
+          </a>
+        </li>
       </ul>
     </section>
     <div class="divisore" aria-hidden="true"></div>
@@ -384,7 +396,7 @@
     scheda.removeAttribute("target"); scheda.removeAttribute("rel"); scheda.removeAttribute("aria-disabled");
     scheda.classList.remove("presto");
     scheda.querySelector(".etichetta").textContent = "Windows";
-    const tipo = j.file.endsWith(".zip") ? "ZIP x64" : "setup x64";
+    const tipo = (j.file.endsWith(".zip") ? "ZIP" : "setup") + (/x64/.test(j.file) ? " x64" : "");
     scheda.querySelector(".vai").innerHTML = "Scarica " + freccia + "<span></span>";
     scheda.querySelector(".vai span").textContent = [tipo, peso(j.bytes)].filter(Boolean).join(" · ");
   }
