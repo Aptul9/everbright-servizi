@@ -108,14 +108,16 @@
     .marchio img { width: 40px; }
     .marchio b { font-size: 19px; }
     .pillola { padding: 10px 18px; font-size: 11px; letter-spacing: 2px; }
-    .titolo { margin: 24px 0 16px; }
+    .titolo { margin: 20px 0 14px; }
     /* due colonne e solo l'essenziale: i servizi stanno tutti nello schermo del telefono */
-    ul { grid-template-columns: 1fr 1fr; gap: 10px; }
-    .servizio { padding: 14px; border-radius: 18px; }
-    .alto { margin-bottom: 10px; }
+    ul { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .servizio { padding: 11px 14px; border-radius: 18px; }
+    .alto { margin-bottom: 8px; }
+    .icona { width: 30px; height: 30px; }
     .etichetta, .servizio p, .vai span { display: none; }
-    .servizio h2 { font-size: 17px; }
-    .vai { padding-top: 10px; font-size: 11px; letter-spacing: 2.4px; }
+    .servizio h2 { font-size: 16px; }
+    .vai { padding-top: 8px; font-size: 11px; letter-spacing: 2.4px; }
+    footer { margin-top: 16px; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -201,6 +203,17 @@
         <h2>EverDrive</h2>
         <p>I tuoi file e le condivisioni temporanee, in un posto solo.</p>
         <div class="vai">Apri <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>drive.everbright.it</span></div>
+      </a>
+    </li>
+    <li>
+      <a class="servizio" href="https://flow.everbright.it" target="_blank" rel="noopener noreferrer">
+        <div class="alto">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 7v7M12 7v4M16 7v9"/></svg></span>
+          <span class="etichetta">Flow</span>
+        </div>
+        <h2>Everflow</h2>
+        <p>Mail e messaggi Teams diventano ticket, lavorati dagli agenti.</p>
+        <div class="vai">Apri <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>flow.everbright.it</span></div>
       </a>
     </li>
     <li>
