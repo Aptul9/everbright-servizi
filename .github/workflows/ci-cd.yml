@@ -90,6 +90,8 @@ jobs:
           test "$(codice http://localhost:8080/prodotti/teams-supercopy.png)" = 200
           # ogni link si apre in una scheda nuova
           html=$(curl -fsS http://localhost:8080/)
+          grep -q '<a class="servizio" href="https://fit.everbright.it" target="_blank" rel="noopener noreferrer">' <<<"$html"
+          test "$(grep -n 'flow.everbright.it"' <<<"$html" | head -1 | cut -d: -f1)" -lt "$(grep -n 'fit.everbright.it"' <<<"$html" | head -1 | cut -d: -f1)"
           test "$(grep -o '<a [^>]*href="https://' <<<"$html" | wc -l)" -gt 0
           test -z "$(grep -o '<a [^>]*href="https://[^>]*>' <<<"$html" | grep -v 'target="_blank" rel="noopener noreferrer"')"
 
