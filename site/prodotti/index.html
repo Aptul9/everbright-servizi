@@ -278,6 +278,17 @@
             <div class="vai">In arrivo</div>
           </a>
         </li>
+        <li>
+          <a class="servizio presto" aria-disabled="true" data-versione="/download/OE-Copilot-Windows-x64.json" data-dal-json data-tipo="exe">
+            <div class="alto">
+              <span class="icona"><img src="/prodotti/oe-copilot.png" alt="" width="24" height="24"></span>
+              <span class="etichetta">In arrivo</span>
+            </div>
+            <h3>OE Copilot</h3>
+            <p>Calendari dei clienti, riunioni e promemoria in una finestra sola.</p>
+            <div class="vai">In arrivo</div>
+          </a>
+        </li>
       </ul>
     </section>
     <div class="divisore" aria-hidden="true"></div>
@@ -396,7 +407,8 @@
     scheda.removeAttribute("target"); scheda.removeAttribute("rel"); scheda.removeAttribute("aria-disabled");
     scheda.classList.remove("presto");
     scheda.querySelector(".etichetta").textContent = "Windows";
-    const tipo = (j.file.endsWith(".zip") ? "ZIP" : "setup") + (/x64/.test(j.file) ? " x64" : "");
+    // data-tipo dice cos'è il file quando non è uno ZIP né un installer (OE Copilot: l'exe stesso, da copiare)
+    const tipo = (scheda.dataset.tipo || (j.file.endsWith(".zip") ? "ZIP" : "setup")) + (/x64/.test(j.file) ? " x64" : "");
     scheda.querySelector(".vai").innerHTML = "Scarica " + freccia + "<span></span>";
     scheda.querySelector(".vai span").textContent = [tipo, peso(j.bytes)].filter(Boolean).join(" · ");
   }

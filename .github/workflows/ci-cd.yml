@@ -25,6 +25,7 @@ jobs:
           test -z "$(awk 'NF { print $NF }' ci/chiavi-build.pub | sort | uniq -d)"
           grep -q ' evertranscript-windows@github-actions$' ci/chiavi-build.pub
           grep -q ' teams-supercopy@github-actions$' ci/chiavi-build.pub
+          grep -q ' oe-copilot-windows@github-actions$' ci/chiavi-build.pub
 
       - name: Immagine e configurazione di Caddy
         run: |
@@ -79,6 +80,8 @@ jobs:
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AgentAwake-Windows-x64.json" data-dal-json'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/AI-Plan-Usage-Windows-x64.json" data-dal-json'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/TeamsSupercopy-Windows.json" data-dal-json'
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/OE-Copilot-Windows-x64.json" data-dal-json data-tipo="exe"'
+          test "$(codice http://localhost:8080/prodotti/oe-copilot.png)" = 200
           # le estensioni Chrome: scheda nuova sul Chrome Web Store, icona servita dal sito
           prodotti=$(curl -fsS http://localhost:8080/prodotti/)
           grep -q '<a class="estensione" href="https://chromewebstore.google.com/detail/evertranscript/ghedbbgihpofhhdkchppfdaokiblfahd" target="_blank" rel="noopener noreferrer">' <<<"$prodotti"
