@@ -105,7 +105,7 @@
   .presto .etichetta { border-color: var(--filo); background: var(--vetro); color: var(--grigio); }
   .presto .vai { color: var(--grigio); }
 
-  /* a sinistra le app Windows, a destra le estensioni Chrome, divise da un filo verticale */
+  /* a sinistra le app Windows, a destra le estensioni Chrome e sotto le app Android, divise da un filo verticale */
   .vetrine { display: grid; grid-template-columns: minmax(0, 1fr) 1px auto; gap: 28px; align-items: stretch; }
   .gruppo-titolo {
     display: flex; align-items: center; gap: 8px; margin: 0 0 12px;
@@ -114,6 +114,10 @@
   .gruppo-titolo::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ciano); box-shadow: 0 0 10px var(--ciano); }
   .estensioni .gruppo-titolo::before { background: #fff; box-shadow: 0 0 10px rgb(255 255 255 / 70%); }
   .windows ul { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+  /* sotto le estensioni, nella stessa colonna, le app Android: la scheda delle app, larga come un'estensione */
+  .colonna { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+  .android ul { grid-template-columns: repeat(2, 212px); }
+  .android .gruppo-titolo::before { background: #3ddc84; box-shadow: 0 0 10px rgb(61 220 132 / 70%); }
   .divisore { background: linear-gradient(transparent, rgb(255 255 255 / 22%) 12%, rgb(255 255 255 / 22%) 88%, transparent); }
 
   /* le estensioni: quadrate, centrate, con l'icona vera e il bottone bianco del sito, per staccarle dalle app Windows */
@@ -146,7 +150,7 @@
   @media (max-width: 900px) {
     .vetrine { grid-template-columns: 1fr; gap: 24px; }
     .divisore { height: 1px; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 22%) 12%, rgb(255 255 255 / 22%) 88%, transparent); }
-    .estensioni ul { grid-template-columns: repeat(auto-fill, minmax(190px, 212px)); }
+    .estensioni ul, .android ul { grid-template-columns: repeat(auto-fill, minmax(190px, 212px)); }
   }
 
   /* la scelta tra installer e ZIP: il vetro scuro della barra del sito, sopra la pagina oscurata */
@@ -202,7 +206,8 @@
     .etichetta, .servizio p, .vai span { display: none; }
     .servizio h3 { font-size: 17px; }
     .vai { padding-top: 10px; font-size: 11px; letter-spacing: 2.4px; }
-    .estensioni ul, .windows ul { grid-template-columns: 1fr 1fr; }
+    .estensioni ul, .windows ul, .android ul { grid-template-columns: 1fr 1fr; }
+    .colonna { gap: 18px; }
     .estensione { padding: 16px 12px 12px; border-radius: 20px; }
     .estensione p { display: none; }
   }
@@ -231,7 +236,7 @@
   </section>
 
   <div class="vetrine">
-    <section class="gruppo windows" aria-labelledby="gruppo-windows">
+  <section class="gruppo windows" aria-labelledby="gruppo-windows">
       <h2 class="gruppo-titolo" id="gruppo-windows">App Windows</h2>
       <ul>
         <li>
@@ -292,29 +297,47 @@
       </ul>
     </section>
     <div class="divisore" aria-hidden="true"></div>
-    <section class="gruppo estensioni" aria-labelledby="gruppo-chrome">
-      <h2 class="gruppo-titolo" id="gruppo-chrome">Estensioni Chrome</h2>
-      <ul>
-        <li>
-          <a class="estensione" href="https://chromewebstore.google.com/detail/evertranscript/ghedbbgihpofhhdkchppfdaokiblfahd" target="_blank" rel="noopener noreferrer">
-            <span class="etichetta">Chrome</span>
-            <img src="/prodotti/evertranscript-chrome.png" alt="" width="56" height="56">
-            <h3>EverTranscript</h3>
-            <p>Trascrizioni, sottotitoli e Prompter per Teams e Meet.</p>
-            <span class="tasto">Apri nel <span>Chrome Web Store</span></span>
-          </a>
-        </li>
-        <li>
-          <a class="estensione" href="https://chromewebstore.google.com/detail/teams-supercopy/kmkdhdmkgkbfgcpefhockpplokelgkfk" target="_blank" rel="noopener noreferrer">
-            <span class="etichetta">Chrome</span>
-            <img src="/prodotti/teams-supercopy.png" alt="" width="56" height="56">
-            <h3>Teams Supercopy</h3>
-            <p>Copia i messaggi di Teams con autore, ora, citazioni e immagini.</p>
-            <span class="tasto">Apri nel <span>Chrome Web Store</span></span>
-          </a>
-        </li>
-      </ul>
-    </section>
+    <div class="colonna">
+      <section class="gruppo estensioni" aria-labelledby="gruppo-chrome">
+        <h2 class="gruppo-titolo" id="gruppo-chrome">Estensioni Chrome</h2>
+        <ul>
+          <li>
+            <a class="estensione" href="https://chromewebstore.google.com/detail/evertranscript/ghedbbgihpofhhdkchppfdaokiblfahd" target="_blank" rel="noopener noreferrer">
+              <span class="etichetta">Chrome</span>
+              <img src="/prodotti/evertranscript-chrome.png" alt="" width="56" height="56">
+              <h3>EverTranscript</h3>
+              <p>Trascrizioni, sottotitoli e Prompter per Teams e Meet.</p>
+              <span class="tasto">Apri nel <span>Chrome Web Store</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="estensione" href="https://chromewebstore.google.com/detail/teams-supercopy/kmkdhdmkgkbfgcpefhockpplokelgkfk" target="_blank" rel="noopener noreferrer">
+              <span class="etichetta">Chrome</span>
+              <img src="/prodotti/teams-supercopy.png" alt="" width="56" height="56">
+              <h3>Teams Supercopy</h3>
+              <p>Copia i messaggi di Teams con autore, ora, citazioni e immagini.</p>
+              <span class="tasto">Apri nel <span>Chrome Web Store</span></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+      <section class="gruppo android" aria-labelledby="gruppo-android">
+        <h2 class="gruppo-titolo" id="gruppo-android">App Android</h2>
+        <ul>
+          <li>
+            <a class="servizio presto" aria-disabled="true" data-versione="/download/EverFit-Android.json" data-dal-json data-tipo="APK" data-etichetta="Android">
+              <div class="alto">
+                <span class="icona"><img src="/prodotti/everfit.png" alt="" width="24" height="24"></span>
+                <span class="etichetta">In arrivo</span>
+              </div>
+              <h3>EverFit</h3>
+              <p>Dieta, allenamento e diario del cibo, con le notifiche sul telefono.</p>
+              <div class="vai">In arrivo</div>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </div>
   </div>
 
   <dialog class="scelta" id="scarica-evertranscript" aria-labelledby="scelta-titolo">
@@ -377,7 +400,7 @@
   // Versione, data, peso e nome del file dal JSON che la pipeline dell'app mette accanto al download
   // ({version, sha256, bytes, commit, file}): si aggiornano a ogni rilascio, senza toccare il sito. La data è quella in cui il
   // JSON è arrivato sul server (Last-Modified). JSON assente o rotto: la scheda resta com'è, con il link che ha già o "In arrivo".
-  const nomeFile = (f) => typeof f === "string" && /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.(zip|exe|msi)$/.test(f);
+  const nomeFile = (f) => typeof f === "string" && /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.(zip|exe|msi|apk)$/.test(f);
   const peso = (b) => Number.isFinite(b) && b > 0 ? (b / 1e6).toLocaleString("it-IT", { maximumFractionDigits: 1 }) + " MB" : "";
   const freccia = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
 
@@ -406,8 +429,8 @@
     scheda.download = "";
     scheda.removeAttribute("target"); scheda.removeAttribute("rel"); scheda.removeAttribute("aria-disabled");
     scheda.classList.remove("presto");
-    scheda.querySelector(".etichetta").textContent = "Windows";
-    // data-tipo dice cos'è il file quando non è uno ZIP né un installer (OE Copilot: l'exe stesso, da copiare)
+    scheda.querySelector(".etichetta").textContent = scheda.dataset.etichetta || "Windows";
+    // data-tipo dice cos'è il file quando non è uno ZIP né un installer (OE Copilot: l'exe stesso, da copiare; EverFit: l'APK)
     const tipo = (scheda.dataset.tipo || (j.file.endsWith(".zip") ? "ZIP" : "setup")) + (/x64/.test(j.file) ? " x64" : "");
     scheda.querySelector(".vai").innerHTML = "Scarica " + freccia + "<span></span>";
     scheda.querySelector(".vai span").textContent = [tipo, peso(j.bytes)].filter(Boolean).join(" · ");

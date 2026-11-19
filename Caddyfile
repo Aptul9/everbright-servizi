@@ -24,6 +24,13 @@
 	handle_path /download/* {
 		root * /srv/downloads
 		header Content-Disposition attachment
+		# il telefono apre l'APK con l'installer di Android solo se arriva con il suo tipo
+		@apk path *.apk
+		header @apk Content-Type application/vnd.android.package-archive
+		# l'app EverFit (fit.everbright.it) legge da sé la versione del guscio Android
+		@everfit path /EverFit-Android.json
+		header @everfit Access-Control-Allow-Origin https://fit.everbright.it
+		header @everfit Vary Origin
 		file_server
 	}
 	root * /srv/site

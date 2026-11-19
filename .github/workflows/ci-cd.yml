@@ -26,6 +26,7 @@ jobs:
           grep -q ' evertranscript-windows@github-actions$' ci/chiavi-build.pub
           grep -q ' teams-supercopy@github-actions$' ci/chiavi-build.pub
           grep -q ' oe-copilot-windows@github-actions$' ci/chiavi-build.pub
+          grep -q ' everfit-android@github-actions$' ci/chiavi-build.pub
 
       - name: Immagine e configurazione di Caddy
         run: |
@@ -50,7 +51,14 @@ jobs:
           # l'installer EXE entra come lo ZIP
           head -c 4096 /dev/urandom > prova.exe
           RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Prova.exe $(sha256sum prova.exe | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.exe
-          test "$(ls -A "$dl" | tr '\n' ' ')" = "Prova.exe Prova.json Prova.zip "
+          # l'APK Android entra solo se è uno ZIP (firma PK) col suo hash; un file qualunque chiamato .apk no
+          printf 'PK\003\004' > prova.apk && head -c 4096 /dev/urandom >> prova.apk
+          RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Prova.apk $(sha256sum prova.apk | cut -d' ' -f1)" sh ci/ricevi-build.sh < prova.apk
+          head -c 4096 /dev/urandom > finto.apk
+          ! RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="Finto.apk $(sha256sum finto.apk | cut -d' ' -f1)" sh ci/ricevi-build.sh < finto.apk
+          printf '{"version":"1.0.0","versionCode":3,"file":"Prova.apk"}\n' > everfit.json
+          RICEVI_DIR=$dl SSH_ORIGINAL_COMMAND="EverFit-Android.json $(sha256sum everfit.json | cut -d' ' -f1)" sh ci/ricevi-build.sh < everfit.json
+          test "$(ls -A "$dl" | tr '\n' ' ')" = "EverFit-Android.json Prova.apk Prova.exe Prova.json Prova.zip "
           # in chiaro sulla 8080, con le regole del sito vero e le restrizioni di compose (sola lettura, senza capacità)
           c=$(docker run -d --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges:true -v "$dl:/srv/downloads:ro" -p 8080:8080 -e DOMAIN=http://localhost:8080 everbright-servizi)
           trap 'docker rm -f "$c" >/dev/null' EXIT
@@ -69,6 +77,11 @@ jobs:
           curl -fsS http://localhost:8080/download/Prova.json | cmp - prova.json
           curl -fsS http://localhost:8080/download/Prova.exe | cmp - prova.exe
           curl -fsSI http://localhost:8080/download/Prova.zip | grep -qi '^content-disposition: attachment'
+          # l'APK col tipo che apre l'installer di Android; il JSON di EverFit leggibile solo dall'app EverFit
+          curl -fsS http://localhost:8080/download/Prova.apk | cmp - prova.apk
+          curl -fsSI http://localhost:8080/download/Prova.apk | grep -qi '^content-type: application/vnd.android.package-archive'
+          curl -fsSI http://localhost:8080/download/EverFit-Android.json | grep -qi '^access-control-allow-origin: https://fit.everbright.it'
+          ! curl -fsSI http://localhost:8080/download/Prova.json | grep -qi '^access-control-allow-origin'
           test "$(codice http://localhost:8080/download/Manca.zip)" = 404
           curl -fsS http://localhost:8080/ | grep -q 'href="/prodotti/"'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'href="/download/EverTranscript-Windows-x64.zip" download'
@@ -82,6 +95,10 @@ jobs:
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/TeamsSupercopy-Windows.json" data-dal-json'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/OE-Copilot-Windows-x64.json" data-dal-json data-tipo="exe"'
           test "$(codice http://localhost:8080/prodotti/oe-copilot.png)" = 200
+          # EverFit: sezione Android sotto le app Windows, scheda dal JSON con l'APK
+          curl -fsS http://localhost:8080/prodotti/ | grep -q '<h2 class="gruppo-titolo" id="gruppo-android">App Android</h2>'
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/EverFit-Android.json" data-dal-json data-tipo="APK" data-etichetta="Android"'
+          test "$(codice http://localhost:8080/prodotti/everfit.png)" = 200
           # le estensioni Chrome: scheda nuova sul Chrome Web Store, icona servita dal sito
           prodotti=$(curl -fsS http://localhost:8080/prodotti/)
           grep -q '<a class="estensione" href="https://chromewebstore.google.com/detail/evertranscript/ghedbbgihpofhhdkchppfdaokiblfahd" target="_blank" rel="noopener noreferrer">' <<<"$prodotti"
