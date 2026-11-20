@@ -24,10 +24,11 @@ Riquadro **Scarica i nostri prodotti**, che apre /prodotti/ (site/prodotti/index
 | EverTranscript Windows | `/download/EverTranscript-Windows-x64.zip`, installer dal campo `setup` del JSON | `Aptul9/evertranscript-windows`, job di rilascio su main, chiave `evertranscript-windows@github-actions` |
 | Agent Awake | il `file` di `/download/AgentAwake-Windows-x64.json` | finché il JSON non c'è la scheda è "In arrivo", senza link |
 | AI Plan Usage | il `file` di `/download/AI-Plan-Usage-Windows-x64.json` | finché il JSON non c'è, link diretto all'asset 0.1.1 della release GitHub di `Aptul9/ai-plan-usage` |
+| Call Degrader | il `file` di `/download/CallDegrader-Windows-x64.json` | `Aptul9/call-degrader`, `.github/workflows/windows-download.yml` su master, chiave `call-degrader@github-actions`; finché il JSON non c'è la scheda è "In arrivo" |
 
 Ogni prodotto mette in `/download/` un JSON con almeno `{"version","sha256","bytes","commit","file"}`, dove `file` è il nome del download nella stessa cartella. La pagina lo legge all'apertura (`data-versione="<url del JSON>"` sulla scheda) e mostra "Versione X del <data>": la data è il `Last-Modified` del JSON, cioè quando è arrivato sul server; `sha256` e `commit` nel tooltip. Se il JSON manca o è rotto la scheda resta com'è.
 
-- Le schede con `data-dal-json` (Agent Awake, AI Plan Usage) prendono anche il link dal `file` del JSON, con il peso da `bytes`. Un `file` che non è un nome semplice `.zip`, `.exe` o `.msi` (percorsi, URL) vale come JSON assente.
+- Le schede con `data-dal-json` (Agent Awake, AI Plan Usage, Call Degrader) prendono anche il link dal `file` del JSON, con il peso da `bytes`. Un `file` che non è un nome semplice `.zip`, `.exe` o `.msi` (percorsi, URL) vale come JSON assente.
 - La scheda di EverTranscript apre un popup con due riquadri: "Installer (.exe)" da `setup: {"file","sha256","bytes"}` e "ZIP portatile" dai campi principali. Senza `setup` l'installer è "In arrivo" e lo ZIP funziona. Senza JavaScript la scheda scarica lo ZIP.
 
 Le estensioni Chrome sono schede quadrate con link fisso alla loro pagina del Chrome Web Store, in una scheda nuova. Le icone sono copie in `site/prodotti/`: se un'estensione cambia icona, si ricopia il file.
