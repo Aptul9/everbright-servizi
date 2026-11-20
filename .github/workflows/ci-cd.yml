@@ -27,6 +27,7 @@ jobs:
           grep -q ' teams-supercopy@github-actions$' ci/chiavi-build.pub
           grep -q ' oe-copilot-windows@github-actions$' ci/chiavi-build.pub
           grep -q ' everfit-android@github-actions$' ci/chiavi-build.pub
+          grep -q ' call-degrader@github-actions$' ci/chiavi-build.pub
 
       - name: Immagine e configurazione di Caddy
         run: |
@@ -95,6 +96,8 @@ jobs:
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/TeamsSupercopy-Windows.json" data-dal-json'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/OE-Copilot-Windows-x64.json" data-dal-json data-tipo="exe"'
           test "$(codice http://localhost:8080/prodotti/oe-copilot.png)" = 200
+          curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/CallDegrader-Windows-x64.json" data-dal-json'
+          test "$(codice http://localhost:8080/prodotti/call-degrader.png)" = 200
           # EverFit: sezione Android sotto le app Windows, scheda dal JSON con l'APK
           curl -fsS http://localhost:8080/prodotti/ | grep -q '<h2 class="gruppo-titolo" id="gruppo-android">App Android</h2>'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/EverFit-Android.json" data-dal-json data-tipo="APK" data-etichetta="Android"'
