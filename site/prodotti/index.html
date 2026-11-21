@@ -273,14 +273,14 @@
           </a>
         </li>
         <li>
-          <a class="servizio presto" aria-disabled="true" data-versione="/download/TeamsSupercopy-Windows.json" data-dal-json>
+          <a class="servizio" href="/download/TeamsSupercopy-Windows-x64.zip" download data-versione="/download/TeamsSupercopy-Windows-x64.json" data-scelta="scarica-supercopy" aria-haspopup="dialog">
             <div class="alto">
               <span class="icona"><img src="/prodotti/teams-supercopy.png" alt="" width="24" height="24"></span>
-              <span class="etichetta">In arrivo</span>
+              <span class="etichetta">Windows</span>
             </div>
             <h3>Teams Supercopy</h3>
             <p>Ctrl+C in Teams copia i messaggi con autore, ora, citazioni e immagini.</p>
-            <div class="vai">In arrivo</div>
+            <div class="vai">Scarica <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>exe o ZIP x64</span></div>
           </a>
         </li>
         <li>
@@ -376,6 +376,31 @@
     </div>
   </dialog>
 
+  <dialog class="scelta" id="scarica-supercopy" aria-labelledby="supercopy-titolo">
+    <div class="scelta-corpo">
+      <div class="scelta-testa">
+        <h2 id="supercopy-titolo">Teams Supercopy</h2>
+        <button class="chiudi" type="button" aria-label="Chiudi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="opzioni">
+        <section class="opzione" data-pacchetto="setup" aria-labelledby="supercopy-setup">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11M7 9.5l5 5 5-5"/><path d="M4 15v3a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18v-3"/></svg></span>
+          <h3 id="supercopy-setup">Installer (.exe)</h3>
+          <p>Installazione guidata, con la scelta dell'avvio all'accesso a Windows.</p>
+          <div class="dati"></div>
+          <a class="bottone" aria-disabled="true">In arrivo</a>
+        </section>
+        <section class="opzione" data-pacchetto="zip" aria-labelledby="supercopy-zip">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h3.5l2 2.5H18a2.5 2.5 0 0 1 2.5 2.5v7.5A2.5 2.5 0 0 1 18 20H6a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M12 11v2M12 15v2"/></svg></span>
+          <h3 id="supercopy-zip">ZIP portatile</h3>
+          <p>Un solo exe da estrarre in una cartella e avviare, senza installazione.</p>
+          <div class="dati"></div>
+          <a class="bottone" href="/download/TeamsSupercopy-Windows-x64.zip" download>Scarica</a>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
   <footer>© Everbright · IT Services</footer>
 </div>
 <script>
@@ -423,9 +448,9 @@
     return r;
   }
 
-  // il pacchetto del popup: versione, peso e, per l'installer, il link quando c'è
-  function pacchetto(chi, versione, p, href) {
-    const box = document.querySelector('[data-pacchetto="' + chi + '"]');
+  // il pacchetto del popup di una scheda: versione, peso e, per l'installer, il link quando c'è
+  function pacchetto(popup, chi, versione, p, href) {
+    const box = popup.querySelector('[data-pacchetto="' + chi + '"]');
     box.querySelector(".dati").replaceChildren(riga(versione, p.sha256, p.commit));
     if (peso(p.bytes)) box.querySelector(".dati").append(Object.assign(document.createElement("span"), { className: "peso", textContent: peso(p.bytes) }));
     if (href) {
@@ -461,9 +486,10 @@
         if (scheda.hasAttribute("data-dal-json")) attiva(scheda, j);
         scheda.querySelector(".vai").before(riga(testo, j.sha256, j.commit));
         if (scheda.dataset.scelta) {
-          pacchetto("zip", testo, j);
+          const popup = document.getElementById(scheda.dataset.scelta);
+          pacchetto(popup, "zip", testo, j);
           const s = j.setup;
-          if (s && typeof s === "object" && nomeFile(s.file)) pacchetto("setup", testo, s, "/download/" + s.file);
+          if (s && typeof s === "object" && nomeFile(s.file)) pacchetto(popup, "setup", testo, s, "/download/" + s.file);
         }
       })
       .catch(() => {});
