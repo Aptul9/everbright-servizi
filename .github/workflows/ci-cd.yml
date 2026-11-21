@@ -99,6 +99,12 @@ jobs:
           test "$(codice http://localhost:8080/prodotti/oe-copilot.png)" = 200
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/CallDegrader-Windows-x64.json" data-dal-json'
           test "$(codice http://localhost:8080/prodotti/call-degrader.png)" = 200
+          # ogni app Windows ha la sua icona vera, nessuna scheda col simbolo generico
+          for icona in evertranscript-chrome agent-awake ai-plan-usage teams-supercopy oe-copilot call-degrader; do
+            curl -fsS http://localhost:8080/prodotti/ | grep -q "<span class=\"icona\"><img src=\"/prodotti/$icona.png\""
+            test "$(codice http://localhost:8080/prodotti/$icona.png)" = 200
+          done
+          test -z "$(curl -fsS http://localhost:8080/prodotti/ | sed -n '/id="gruppo-windows"/,/<\/section>/p' | grep '<span class="icona"><svg')"
           # EverFit: sezione Android sotto le app Windows, scheda dal JSON con l'APK
           curl -fsS http://localhost:8080/prodotti/ | grep -q '<h2 class="gruppo-titolo" id="gruppo-android">App Android</h2>'
           curl -fsS http://localhost:8080/prodotti/ | grep -q 'data-versione="/download/EverFit-Android.json" data-dal-json data-tipo="APK" data-etichetta="Android"'
