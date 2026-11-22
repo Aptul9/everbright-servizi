@@ -251,14 +251,14 @@
           </a>
         </li>
         <li>
-          <a class="servizio presto" aria-disabled="true" data-versione="/download/AgentAwake-Windows-x64.json" data-dal-json>
+          <a class="servizio" href="/download/AgentAwake-Windows-x64.zip" download data-versione="/download/AgentAwake-Windows-x64.json" data-scelta="scarica-agent-awake" aria-haspopup="dialog">
             <div class="alto">
               <span class="icona"><img src="/prodotti/agent-awake.png" alt="" width="24" height="24"></span>
-              <span class="etichetta">In arrivo</span>
+              <span class="etichetta">Windows</span>
             </div>
             <h3>Agent Awake</h3>
             <p>Tiene sveglio il portatile, anche col coperchio chiuso, mentre un agente AI lavora.</p>
-            <div class="vai">In arrivo</div>
+            <div class="vai">Scarica <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>exe o ZIP x64</span></div>
           </a>
         </li>
         <li>
@@ -371,6 +371,31 @@
           <p>Da estrarre in una cartella e avviare, senza installazione.</p>
           <div class="dati"></div>
           <a class="bottone" href="/download/EverTranscript-Windows-x64.zip" download>Scarica</a>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="scelta" id="scarica-agent-awake" aria-labelledby="agent-awake-titolo">
+    <div class="scelta-corpo">
+      <div class="scelta-testa">
+        <h2 id="agent-awake-titolo">Agent Awake</h2>
+        <button class="chiudi" type="button" aria-label="Chiudi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="opzioni">
+        <section class="opzione" data-pacchetto="setup" aria-labelledby="agent-awake-setup">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11M7 9.5l5 5 5-5"/><path d="M4 15v3a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18v-3"/></svg></span>
+          <h3 id="agent-awake-setup">Installer (.exe)</h3>
+          <p>Installazione guidata, con la scelta dell'avvio all'accesso a Windows.</p>
+          <div class="dati"></div>
+          <a class="bottone" aria-disabled="true">In arrivo</a>
+        </section>
+        <section class="opzione" data-pacchetto="zip" aria-labelledby="agent-awake-zip">
+          <span class="icona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h3.5l2 2.5H18a2.5 2.5 0 0 1 2.5 2.5v7.5A2.5 2.5 0 0 1 18 20H6a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M12 11v2M12 15v2"/></svg></span>
+          <h3 id="agent-awake-zip">ZIP portatile</h3>
+          <p>Da estrarre in una cartella e avviare, senza installazione.</p>
+          <div class="dati"></div>
+          <a class="bottone" href="/download/AgentAwake-Windows-x64.zip" download>Scarica</a>
         </section>
       </div>
     </div>
